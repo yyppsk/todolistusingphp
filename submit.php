@@ -10,15 +10,15 @@
 <body>
 <?php
     $server = "localhost";
-    $user = "rootuser";
-    $password = "123123test";
-    $db = "todo";
+    $user = "root";
+    $password = "";
+    $db = "todolist";
     $username = $_POST['username'];
     $todo = $_POST['todo'];
     $email = $_POST['email'];
     $connect = mysqli_connect($server,$user,$password,$db);
     if(isset($_POST["submit"])){
-        if($query = mysqli_query($connect,"INSERT INTO list VALUES('".$email."','".$username."', '".$todo."')")){
+        if($query = mysqli_query($connect,"INSERT INTO list VALUES('','".$email."', '".$username."', '".$todo."','".date("Y-m-d H:i:s")."')")){
             echo "Success";
         }else{
             echo "Failure" . mysqli_error($connect);

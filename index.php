@@ -90,15 +90,17 @@ div {
 
 <table id="customers">
   <tr>
-    <th>Email</th>
     <th>Name</th>
+    <th>Email</th>
     <th>To do</th>
+    <th>Submited</th>
+    <th>Action</th>
   </tr>
 <?php
  $server = "localhost";
- $user = "rootuser";
- $password = "123123test";
- $db = "todo";
+ $user = "root";
+ $password = "";
+ $db = "todolist";
  $conn= new mysqli($server,$user,$password,$db);
  if($conn){
     echo '<div class="p-3 mb-2 bg-success text-white"><p class="text-success" style="font-size: 28px;">',"You are Succesfully connected to the Database!",'</p></div>';
@@ -108,28 +110,44 @@ div {
  $conn = mysqli_connect($server,$user,$password,$db);
  $sql = "SELECT * FROM list";
  $res_data = mysqli_query($conn,$sql);
+      if(mysqli_num_rows($res_data) < 1)
+      {
+        echo "<tr>
+                <td colspan='5'><center>No data existing!</center></td>
+              </tr>";
+      }
+
       while($row = mysqli_fetch_array($res_data)){
           //here goes the data   //mysqli_close($conn);
           echo '<tr>';
           echo '<td>',$row['email'],'</td>';
-          echo '<td>',$row['Name'],'</td>';
-          echo '<td>',$row['to do'],'</td>';
+          echo '<td>',$row['username'],'</td>';
+          echo '<td>',$row['todo'],'</td>';
+          echo '<td>',$row['date_at'],'</td>';
+          echo '<td><a href="delete.php?id=',$row['id'],'" onClick="ConfirmDelete()" >Delete</a></td>';
           echo '</tr>';
       }
   ?>
   </table>
   <h1>To Do list</h1>
   <form action="submit.php" method="POST">
-            Name: <input type="text" name="username">
+            Name: <input type="text" name="username" required>
             <br/>
-            Email: <input type="email" name="email">
+            Email: <input type="email" name="email" required>
             <br/>
             To do: <input type="text" id="todo" name="todo"
-          rows="5" cols="33">
-Enter your to do tasks here
+          rows="5" cols="33" required>
+          <small>Enter your to do tasks here</small>
     </input>
             <br/>
             <input type="submit" name="submit" value="Register">
         </form>
+
+        <script>
+          function ConfirmDelete()
+{
+  return confirm("Are you sure you want to delete?");
+}
+        </script>
 </body>
 </html>
