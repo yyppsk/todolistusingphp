@@ -9,17 +9,18 @@
 </head>
 <body>
 <?php
-    $server = "localhost";
-    $user = "root";
-    $password = "";
-    $db = "todolist";
+    require "Database/ConnectBD.php";
+
+    $pdo = ConnectBD::createConnection();
     $id = (int)$_GET['id']; //FIX SQL INJECTION
-    $connect = mysqli_connect($server,$user,$password,$db);
-    
-    if($query = mysqli_query($connect,"DELETE FROM list WHERE id=".$id.";")){
+
+    $statement = $pdo->prepare("DELETE FROM list WHERE id = ?");
+    $statement->bindValue(1,$id);
+
+    if ($statement->execute()){
         echo "Success";
     }else{
-        echo "Failure" . mysqli_error($connect);
+        echo "Failure";
     }
     
 ?>
