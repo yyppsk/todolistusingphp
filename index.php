@@ -83,8 +83,7 @@ div {
   color: white;
 }
 </style>
-</head>
-<body>
+
 
 <h1>A To-do List</h1>
 
@@ -97,36 +96,40 @@ div {
     <th>Action</th>
   </tr>
 <?php
- $server = "localhost";
- $user = "root";
- $password = "";
- $db = "todolist";
- $conn= new mysqli($server,$user,$password,$db);
- if($conn){
+require "Database/ConnectBD.php";
+
+$pdo = ConnectBD::createConnection();
+
+ if($pdo){
     echo '<div class="p-3 mb-2 bg-success text-white"><p class="text-success" style="font-size: 28px;">',"You are Succesfully connected to the Database!",'</p></div>';
  }else{
     echo '<div class="p-3 mb-2 bg-danger text-white"><p class="text-bg-danger" style="font-size: 28px;">',"You failed to connect to the Datbase",'</p></div>';;
  }
- $conn = mysqli_connect($server,$user,$password,$db);
+
  $sql = "SELECT * FROM list";
- $res_data = mysqli_query($conn,$sql);
-      if(mysqli_num_rows($res_data) < 1)
-      {
-        echo "<tr>
+
+ $statement = $pdo->query($sql);
+
+if ($statement->rowCount() < 1){
+
+    echo "<tr>
                 <td colspan='5'><center>No data existing!</center></td>
               </tr>";
-      }
 
-      while($row = mysqli_fetch_array($res_data)){
-          //here goes the data   //mysqli_close($conn);
-          echo '<tr>';
-          echo '<td>',$row['email'],'</td>';
-          echo '<td>',$row['username'],'</td>';
-          echo '<td>',$row['todo'],'</td>';
-          echo '<td>',$row['date_at'],'</td>';
-          echo '<td><a href="delete.php?id=',$row['id'],'" onClick="ConfirmDelete()" >Delete</a></td>';
-          echo '</tr>';
-      }
+}
+
+    $row = $statement->fetchAll();
+
+    foreach ($row as $r){
+        echo '<tr>';
+        echo '<td>',$r['email'],'</td>';
+        echo '<td>',$r['username'],'</td>';
+        echo '<td>',$r['todo'],'</td>';
+        echo '<td>',$r['date_at'],'</td>';
+        echo '<td><a href="delete.php?id=',$r['id'],'" onClick="ConfirmDelete()" >Delete</a></td>';
+        echo '</tr>';
+    }
+
   ?>
   </table>
   <h1>To Do list</h1>

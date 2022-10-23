@@ -9,19 +9,26 @@
 </head>
 <body>
 <?php
-    $server = "localhost";
-    $user = "root";
-    $password = "";
-    $db = "todolist";
+
+require "Database/ConnectBD.php";
+
+    $pdo = ConnectBD::createConnection();
+
     $username = $_POST['username'];
     $todo = $_POST['todo'];
     $email = $_POST['email'];
-    $connect = mysqli_connect($server,$user,$password,$db);
+
     if(isset($_POST["submit"])){
-        if($query = mysqli_query($connect,"INSERT INTO list VALUES('','".$email."', '".$username."', '".$todo."','".date("Y-m-d H:i:s")."')")){
+        $statement = $pdo->prepare("INSERT INTO list(username,email,todo,date_at) VALUES(?,?,?,?)");
+        $statement->bindValue(1,$_POST['username']);
+        $statement->bindValue(2,$_POST['email']);
+        $statement->bindValue(3,$_POST['todo']);
+        $statement->bindValue(4,date("Y-m-d H:i:s"));
+
+        if($statement->execute()){
             echo "Success";
         }else{
-            echo "Failure" . mysqli_error($connect);
+            echo "Failure";
         }
     }
 ?>
